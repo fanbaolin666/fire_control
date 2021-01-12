@@ -1,5 +1,6 @@
 package com.hongseng.app.controller;
 
+import annotation.AnonymousAccess;
 import com.hongseng.app.service.LoginService;
 import io.swagger.annotations.Api;
 import model.dto.UserDto;
@@ -26,6 +27,7 @@ public class LoginController {
     LoginService loginService;
 
     @PostMapping("/login")
+    @AnonymousAccess
     public Result login(@RequestBody @Validated UserDto user){
         return loginService.login(user);
     }
