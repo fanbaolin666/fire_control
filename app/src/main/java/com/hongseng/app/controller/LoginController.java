@@ -33,7 +33,7 @@ public class LoginController {
     }
 
     @GetMapping("/preAuthorize")
-    @PreAuthorize("hasAnyAuthority('admin')")
+    @PreAuthorize("hasAnyAuthority('0001')")
     public String test(){
         return "PreAuthorize is ok";
     }

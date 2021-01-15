@@ -5,23 +5,20 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-
-
 /**
  * @program: fire_control
- * @description: 用户实体类
+ * @description:
  * @author: fbl
- * @create: 2021-01-12 08:28
+ * @create: 2021-01-15 09:42
  **/
 @Data
-@TableName("sys_user")
-public class SysUser {
+@TableName("sys_permission")
+public class SysPermission {
     @TableId
     private Integer id;
 
-    @TableField("user_name")
-    private String userName;
+    @TableField("menu_name")
+    private String menuName;
 
-    private String password;
-
+    private String code;
 }
