@@ -20,4 +20,7 @@ public class SysRole {
 
     @TableField("role_name")
     private String roleName;
+
+    @TableField("role_desc")
+    private String roleDesc;
 }

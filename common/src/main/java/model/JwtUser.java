@@ -1,6 +1,6 @@
 package model;
 
-import model.dto.UserRoleDto;
+import model.dto.UserRolePermissionDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ public class JwtUser implements UserDetails {
     }
 
     // 写一个能直接使用user创建jwtUser的构造器
-    public JwtUser(UserRoleDto user) {
+    public JwtUser(UserRolePermissionDto user) {
         if(null == user){
             return ;
         }

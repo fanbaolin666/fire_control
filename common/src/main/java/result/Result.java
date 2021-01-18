@@ -2,6 +2,7 @@ package result;
 
 
 
+import enums.ErrorCodeEnum;
 import lombok.Data;
 
 /**

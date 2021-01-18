@@ -1,4 +1,4 @@
-package result;
+package enums;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -46,7 +46,10 @@ ErrorCodeEnum {
     SYS_ERR_ACCIDENT_TYPE_REPEAT(3009, "事故类型已存在！"),
     SYS_ERR_DEL_ACCOUNT(3010, "用户不能删除自己的账号！"),
     SYS_ERR_ACCOUNT(3011, "该账号已存在！"),
-    SYS_ERR_PARAMS_NULL(3012, "参数不能全部为空！");
+    SYS_ERR_PARAMS_NULL(3012, "参数不能全部为空！"),
+
+    SYS_ERR_TOKEN_EXPIRED(3013, "签名已经过期！"),
+    SYS_ERR_TOKEN_SIGNATURE(3013, "非法签名！");
 
     /****************************** 分隔符 **************************************/
 

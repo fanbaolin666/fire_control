@@ -7,7 +7,7 @@ import com.hongseng.app.mapper.UserMapper;
 import com.hongseng.app.mapper.UserRoleMapper;
 import model.*;
 import model.dto.UserDto;
-import model.dto.UserRoleDto;
+import model.dto.UserRolePermissionDto;
 import model.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,13 @@ public class LoginService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * @Author fbl
+     * @Description 登录
+     * @Date 9:39 2021/1/18
+     * @Param userInfo
+     * @return UserRoleDto
+     */
     public Result login(UserDto user) {
         String userName = user.getUserName();
         String password = user.getPassword();
@@ -56,25 +63,9 @@ public class LoginService {
         if (null == userInfo) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);
         }
-
-        // 用户存在，查找角色
-        QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
-        userRoleQueryWrapper.eq("user_id", userInfo.getId());
-        List<UserRole> userRoles = userRoleMapper.selectList(userRoleQueryWrapper);
-
-        // 角色查找权限
-        QueryWrapper<RolePermission> rolePermissionQueryWrapper = new QueryWrapper<>();
-        rolePermissionQueryWrapper.in("role_id", userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList()));
-        List<RolePermission> rolePermissions = rolePermissionMapper.selectList(rolePermissionQueryWrapper);
-
-        QueryWrapper<SysPermission> permissionQueryWrapper = new QueryWrapper<>();
-        permissionQueryWrapper.in("id",rolePermissions.stream().map(RolePermission::getPermissionId).collect(Collectors.toList()));
-        List<SysPermission> sysPermissions = permissionMapper.selectList(permissionQueryWrapper);
-        UserRoleDto userRoleDto = new UserRoleDto();
-        BeanUtils.copyProperties(userInfo,userRoleDto);
-        userRoleDto.setCode(sysPermissions.stream().map(SysPermission::getCode).collect(Collectors.joining(",")));
-
-        JwtUser jwtUser = new JwtUser(userRoleDto);
+        // 得到用户权限
+        UserRolePermissionDto userRolePermissionDto = getUserRole(userInfo);
+        JwtUser jwtUser = new JwtUser(userRolePermissionDto);
 
 
         boolean flag = passwordEncoder.matches(password, userInfo.getPassword());
@@ -92,5 +83,33 @@ public class LoginService {
         userVo.setPassword(userInfo.getPassword());
         userVo.setToken(token);
         return Result.success(userVo);
+    }
+
+
+    /**
+     * @Author fbl
+     * @Description 得到用户权限
+     * @Date 9:39 2021/1/18
+     * @Param userInfo
+     * @return UserRoleDto
+    */
+    private UserRolePermissionDto getUserRole(SysUser userInfo) {
+        // 用户存在，查找角色
+        QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
+        userRoleQueryWrapper.eq("user_id", userInfo.getId());
+        List<UserRole> userRoles = userRoleMapper.selectList(userRoleQueryWrapper);
+
+        // 角色查找权限
+        QueryWrapper<RolePermission> rolePermissionQueryWrapper = new QueryWrapper<>();
+        rolePermissionQueryWrapper.in("role_id", userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList()));
+        List<RolePermission> rolePermissions = rolePermissionMapper.selectList(rolePermissionQueryWrapper);
+
+        QueryWrapper<SysPermission> permissionQueryWrapper = new QueryWrapper<>();
+        permissionQueryWrapper.in("id", rolePermissions.stream().map(RolePermission::getPermissionId).collect(Collectors.toList()));
+        List<SysPermission> sysPermissions = permissionMapper.selectList(permissionQueryWrapper);
+        UserRolePermissionDto userRolePermissionDto = new UserRolePermissionDto();
+        BeanUtils.copyProperties(userInfo, userRolePermissionDto);
+        userRolePermissionDto.setCode(sysPermissions.stream().map(SysPermission::getCode).collect(Collectors.joining(",")));
+        return userRolePermissionDto;
     }
 }

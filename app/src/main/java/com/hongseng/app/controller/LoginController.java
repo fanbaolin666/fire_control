@@ -4,6 +4,7 @@ import annotation.AnonymousAccess;
 import com.hongseng.app.service.LoginService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import model.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @AnonymousAccess
+    @ApiOperation(value = "用户登录")
     public Result login(@RequestBody @Validated UserDto user){
         return loginService.login(user);
     }

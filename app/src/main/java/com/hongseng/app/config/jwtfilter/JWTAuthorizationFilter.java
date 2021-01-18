@@ -27,6 +27,7 @@ import java.util.Arrays;
  * @create: 2020-12-02 14:25
  **/
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+    private static final String LOGIN_URL = "/login";
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -38,8 +39,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     FilterChain chain) throws IOException, ServletException {
 
         String tokenHeader = request.getHeader(TokenEnum.TOKEN_HEADER.getValue());
-        // 如果请求头中没有Authorization信息则直接放行了
-        if (tokenHeader == null || !tokenHeader.startsWith(TokenEnum.TOKEN_PREFIX.getValue())) {
+        // 如果请求头中没有Authorization信息或者是登录接口直接放行了
+        if (tokenHeader == null || !tokenHeader.startsWith(TokenEnum.TOKEN_PREFIX.getValue()) || request.getRequestURL().toString().contains(LOGIN_URL)) {
             chain.doFilter(request, response);
             return;
         }
@@ -66,7 +67,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     /**
      * 这里从token中获取用户信息并新建一个token
      */
-
     private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) {
         String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
 

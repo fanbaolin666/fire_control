@@ -9,7 +9,7 @@ import lombok.Data;
  * @create: 2021-01-15 09:36
  **/
 @Data
-public class UserRoleDto {
+public class UserRolePermissionDto {
 
     private Integer id;
 
