@@ -1,6 +1,9 @@
 package com.hongseng.app.config.jwtfilter;
 
 import enums.TokenEnum;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,7 +44,22 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
         // 如果请求头中有token，则进行解析，并且设置认证信息
-        SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+        try {
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+
+        } catch (ExpiredJwtException e) {
+            // 异常捕获，发送到error controller
+            request.setAttribute("expiredJwtException", e);
+            //将异常分发到/error/exthrow控制器
+            request.getRequestDispatcher("/expiredJwtException").forward(request, response);
+        } catch (AccessDeniedException | SignatureException e) {
+            // 异常捕获，发送到error controller
+            request.setAttribute("signatureException", e);
+            //将异常分发到/error/exthrow控制器
+            request.getRequestDispatcher("/signatureException").forward(request, response);
+        }
+
+
         super.doFilterInternal(request, response, chain);
     }
 

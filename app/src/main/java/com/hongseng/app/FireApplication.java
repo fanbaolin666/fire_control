@@ -22,4 +22,5 @@ public class FireApplication {
         return new SpringContextHolder();
     }
 
+
 }
