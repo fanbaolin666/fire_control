@@ -56,4 +56,13 @@ public class RoleController {
     public Result deleteRole(@PathVariable Integer id) {
         return roleService.deleteRole(id);
     }
+
+
+    @GetMapping("/role/{id}")
+    @PreAuthorize("hasAnyAuthority('0001')")
+    @ApiOperation(value = "查询角色详情")
+    public Result getRole(@PathVariable Integer id) {
+        return roleService.getRole(id);
+    }
+
 }

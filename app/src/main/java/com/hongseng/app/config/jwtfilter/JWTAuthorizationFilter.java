@@ -46,30 +46,25 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
-        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
-        boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
-        if (!twoTimesTokenExpiration) {
-            String username = JwtTokenUtils.getUsername(token);
-            String permission = JwtTokenUtils.getUserPermission(token);
-            JWTAuthorizationFilter.token = JwtTokenUtils.createToken(username, permission, false);
-        }
 
         // 如果请求头中有token，则进行解析，并且设置认证信息
         try {
             if (JWTAuthorizationFilter.token != null) {
+                refreshToken(token);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(token));
             } else {
+                refreshToken(tokenHeader);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
             }
         } catch (ExpiredJwtException e) {
-            // 异常捕获，发送到error controller
+            // 异常捕获，发送到expiredJwtException
             request.setAttribute("expiredJwtException", e);
-            //将异常分发到/error/exthrow控制器
+            //将异常分发到/expiredJwtException控制器
             request.getRequestDispatcher("/expiredJwtException").forward(request, response);
         } catch (AccessDeniedException | SignatureException e) {
-            // 异常捕获，发送到error controller
+            // 异常捕获，发送到signatureException
             request.setAttribute("signatureException", e);
-            //将异常分发到/error/exthrow控制器
+            //将异常分发到/signatureException控制器
             request.getRequestDispatcher("/signatureException").forward(request, response);
         }
         super.doFilterInternal(request, response, chain);
@@ -87,10 +82,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         for (String p : Arrays.asList(permission.split(","))) {
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(p));
         }
-
         if (username != null) {
             return new UsernamePasswordAuthenticationToken(username, null, simpleGrantedAuthorities);
         }
         return null;
+    }
+
+    /**
+     * token刷新
+     * @param tokenHeader
+     */
+    private void refreshToken(String tokenHeader){
+        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
+        boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
+        if (!twoTimesTokenExpiration) {
+            String username = JwtTokenUtils.getUsername(token);
+            String permission = JwtTokenUtils.getUserPermission(token);
+            JWTAuthorizationFilter.token = JwtTokenUtils.createToken(username, permission, false);
+        }
+
     }
 }

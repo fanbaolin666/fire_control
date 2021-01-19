@@ -41,8 +41,8 @@ public class RoleService {
         // 角色名唯一
         QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
         sysRoleQueryWrapper.eq("role_name", roleVo.getRoleName());
-        if (CollectionUtil.isNotEmpty(roleMapper.selectList(sysRoleQueryWrapper))){
-                return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
+        if (CollectionUtil.isNotEmpty(roleMapper.selectList(sysRoleQueryWrapper))) {
+            return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
         }
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(roleVo, sysRole);
@@ -60,5 +60,9 @@ public class RoleService {
     public Result deleteRole(Integer id) {
         roleMapper.deleteById(id);
         return Result.success();
+    }
+
+    public Result getRole(Integer id) {
+        return Result.success(roleMapper.selectById(id));
     }
 }

@@ -11,7 +11,7 @@ import result.Result;
 
 /**
  * @program: fire_control
- * @description:
+ * @description: 处理自定义的业务异常
  * @author: fbl
  * @create: 2021-01-15 16:21
  **/
@@ -19,7 +19,7 @@ import result.Result;
 public class GlobalExceptionHandler {
 
     /**
-     * 处理自定义的业务异常
+     * token过期
      * @return
      */
     @ExceptionHandler(value = ExpiredJwtException.class)
@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return Result.failure(ErrorCodeEnum.SYS_ERR_TOKEN_EXPIRED);
     }
 
+
+    /**
+     * token错误
+     * @return
+     */
     @ExceptionHandler(value = SignatureException.class)
     @ResponseBody
     public Result signatureException(){
