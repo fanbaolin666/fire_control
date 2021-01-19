@@ -5,6 +5,7 @@ import com.hongseng.app.mapper.PermissionMapper;
 import com.hongseng.app.mapper.RolePermissionMapper;
 import com.hongseng.app.mapper.UserMapper;
 import com.hongseng.app.mapper.UserRoleMapper;
+import enums.ErrorCodeEnum;
 import model.*;
 import model.dto.UserDto;
 import model.dto.UserRolePermissionDto;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import enums.ErrorCodeEnum;
 import result.Result;
 import utils.JwtTokenUtils;
 

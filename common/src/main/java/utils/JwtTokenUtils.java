@@ -2,6 +2,7 @@ package utils;
 
 import enums.TokenEnum;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -39,7 +40,12 @@ public class JwtTokenUtils {
 
     // 从token中获取用户名
     public static String getUsername(String token) {
-        return getTokenBody(token).getSubject();
+        try {
+            return  getTokenBody(token).getSubject();
+        }catch (ExpiredJwtException e){
+            return e.getClaims().getSubject();
+        }
+
     }
 
     // 是否已过期
@@ -55,7 +61,28 @@ public class JwtTokenUtils {
     }
 
     public static String getUserPermission(String token) {
-        return (String) getTokenBody(token).get(TokenEnum.ROLE_CLAIMS.getValue());
+        try {
+            return (String) getTokenBody(token).get(TokenEnum.ROLE_CLAIMS.getValue());
+        }catch (ExpiredJwtException e){
+            return (String) e.getClaims().get(TokenEnum.ROLE_CLAIMS.getValue());
+        }
+
+    }
+
+    /**
+     * token时间没有超过期时间的两倍，续期，否则重新登录
+     *
+     * @param token
+     * @return
+     */
+    public static boolean isTwoTimesTokenExpiration(String token) {
+        try {
+            Claims tokenBody = getTokenBody(token);
+            Date expiration = tokenBody.getExpiration();
+            return expiration.getTime() * 2  < System.currentTimeMillis();
+        }catch (ExpiredJwtException e){
+            return e.getClaims().getExpiration().getTime() * 2 < System.currentTimeMillis();
+        }
     }
 }
 

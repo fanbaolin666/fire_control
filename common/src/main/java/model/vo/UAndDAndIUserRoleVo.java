@@ -1,4 +1,4 @@
-package model.dto;
+package model.vo;
 
 import lombok.Data;
 
@@ -7,12 +7,12 @@ import java.util.List;
 
 /**
  * @program: fire_control
- * @description: 修改用户角色
+ * @description: 修改删除插入用户角色
  * @author: fbl
  * @create: 2021-01-18 11:00
  **/
 @Data
-public class UAndDAndIUserRoleDto {
+public class UAndDAndIUserRoleVo {
     @NotNull
     private Integer userId;
 

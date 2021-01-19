@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import result.Result;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 /**
  * @program: fire_control

@@ -49,7 +49,9 @@ ErrorCodeEnum {
     SYS_ERR_PARAMS_NULL(3012, "参数不能全部为空！"),
 
     SYS_ERR_TOKEN_EXPIRED(3013, "签名已经过期！"),
-    SYS_ERR_TOKEN_SIGNATURE(3013, "非法签名！");
+    SYS_ERR_TOKEN_SIGNATURE(3013, "非法签名！"),
+
+    SYS_ERR_ROLE_REPETITION(3014, "角色名重复！");
 
     /****************************** 分隔符 **************************************/
 

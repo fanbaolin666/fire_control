@@ -28,6 +28,7 @@ import java.util.Arrays;
  **/
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private static final String LOGIN_URL = "/login";
+    private static String token = null;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -38,16 +39,28 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
+
         String tokenHeader = request.getHeader(TokenEnum.TOKEN_HEADER.getValue());
         // 如果请求头中没有Authorization信息或者是登录接口直接放行了
         if (tokenHeader == null || !tokenHeader.startsWith(TokenEnum.TOKEN_PREFIX.getValue()) || request.getRequestURL().toString().contains(LOGIN_URL)) {
             chain.doFilter(request, response);
             return;
         }
+        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
+        boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
+        if (!twoTimesTokenExpiration) {
+            String username = JwtTokenUtils.getUsername(token);
+            String permission = JwtTokenUtils.getUserPermission(token);
+            JWTAuthorizationFilter.token = JwtTokenUtils.createToken(username, permission, false);
+        }
+
         // 如果请求头中有token，则进行解析，并且设置认证信息
         try {
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
-
+            if (JWTAuthorizationFilter.token != null) {
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(token));
+            } else {
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+            }
         } catch (ExpiredJwtException e) {
             // 异常捕获，发送到error controller
             request.setAttribute("expiredJwtException", e);
@@ -59,8 +72,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             //将异常分发到/error/exthrow控制器
             request.getRequestDispatcher("/signatureException").forward(request, response);
         }
-
-
         super.doFilterInternal(request, response, chain);
     }
 
