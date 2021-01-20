@@ -50,7 +50,11 @@ public class JwtTokenUtils {
 
     // 是否已过期
     public static boolean isExpiration(String token) {
-        return getTokenBody(token).getExpiration().before(new Date());
+        try {
+            return getTokenBody(token).getExpiration().before(new Date());
+        }catch (ExpiredJwtException e){
+            return  e.getClaims().getExpiration().before(new Date());
+        }
     }
 
     private static Claims getTokenBody(String token) {
@@ -79,9 +83,10 @@ public class JwtTokenUtils {
         try {
             Claims tokenBody = getTokenBody(token);
             Date expiration = tokenBody.getExpiration();
-            return expiration.getTime() * 2  < System.currentTimeMillis();
+            return expiration.getTime() + TokenEnum.EXPIRATION.getTime() * 1000 * 2   < System.currentTimeMillis();
         }catch (ExpiredJwtException e){
-            return e.getClaims().getExpiration().getTime() * 2 < System.currentTimeMillis();
+            long expirationTime = e.getClaims().getExpiration().getTime() + TokenEnum.EXPIRATION.getTime() * 1000 * 2  ;
+            return expirationTime < System.currentTimeMillis();
         }
     }
 }

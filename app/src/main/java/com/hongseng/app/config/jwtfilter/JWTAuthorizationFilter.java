@@ -1,5 +1,6 @@
 package com.hongseng.app.config.jwtfilter;
 
+import com.hongseng.app.config.exception.RefreshTokenException;
 import enums.TokenEnum;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -28,7 +29,10 @@ import java.util.Arrays;
  **/
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private static final String LOGIN_URL = "/login";
-    private static String token = null;
+    /**
+     * 防止并发修改token，使用ThreadLocal
+     */
+    private static ThreadLocal<String> token = null;
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -50,13 +54,13 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         // 如果请求头中有token，则进行解析，并且设置认证信息
         try {
             if (JWTAuthorizationFilter.token != null) {
-                refreshToken(token);
-                SecurityContextHolder.getContext().setAuthentication(getAuthentication(token));
+                refreshToken(token.get());
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(token.get()));
             } else {
                 refreshToken(tokenHeader);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
             }
-        } catch (ExpiredJwtException e) {
+        } catch (RefreshTokenException | ExpiredJwtException e) {
             // 异常捕获，发送到expiredJwtException
             request.setAttribute("expiredJwtException", e);
             //将异常分发到/expiredJwtException控制器
@@ -90,16 +94,24 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     /**
      * token刷新
+     *
      * @param tokenHeader
      */
-    private void refreshToken(String tokenHeader){
+    private void refreshToken(String tokenHeader) throws RefreshTokenException {
         String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
-        boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
-        if (!twoTimesTokenExpiration) {
-            String username = JwtTokenUtils.getUsername(token);
-            String permission = JwtTokenUtils.getUserPermission(token);
-            JWTAuthorizationFilter.token = JwtTokenUtils.createToken(username, permission, false);
+        // 客户端token有没有过期
+        boolean expiration = JwtTokenUtils.isExpiration(token);
+        // 是否过期时间已将超出两倍
+        if(expiration){
+            boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
+            // 没有，续期，否则抛出自定义异常
+            if (!twoTimesTokenExpiration) {
+                String username = JwtTokenUtils.getUsername(token);
+                String permission = JwtTokenUtils.getUserPermission(token);
+                JWTAuthorizationFilter.token.set(JwtTokenUtils.createToken(username, permission, false));
+            } else {
+                throw new RefreshTokenException();
+            }
         }
-
     }
 }

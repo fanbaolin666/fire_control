@@ -1,4 +1,4 @@
-package com.hongseng.app.config;
+package com.hongseng.app.config.exception;
 
 import enums.ErrorCodeEnum;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,22 +20,24 @@ public class GlobalExceptionHandler {
 
     /**
      * token过期
+     *
      * @return
      */
-    @ExceptionHandler(value = ExpiredJwtException.class)
+    @ExceptionHandler(value = {ExpiredJwtException.class, RefreshTokenException.class})
     @ResponseBody
-    public Result expiredJwtException(){
+    public Result expiredJwtException() {
         return Result.failure(ErrorCodeEnum.SYS_ERR_TOKEN_EXPIRED);
     }
 
 
     /**
      * token错误
+     *
      * @return
      */
     @ExceptionHandler(value = SignatureException.class)
     @ResponseBody
-    public Result signatureException(){
+    public Result signatureException() {
         return Result.failure(ErrorCodeEnum.SYS_ERR_TOKEN_SIGNATURE);
     }
 
