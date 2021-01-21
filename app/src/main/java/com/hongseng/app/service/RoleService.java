@@ -38,10 +38,8 @@ public class RoleService {
     }
 
     public Result insertRole(InsertRoleVo roleVo) {
-        // 角色名唯一
-        QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
-        sysRoleQueryWrapper.eq("role_name", roleVo.getRoleName());
-        if (CollectionUtil.isNotEmpty(roleMapper.selectList(sysRoleQueryWrapper))) {
+        // 角色名重复
+        if(!isUniqueRoleName(roleVo.getRoleName())){
             return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
         }
         SysRole sysRole = new SysRole();
@@ -51,6 +49,10 @@ public class RoleService {
     }
 
     public Result updateRole(UpdateRoleVo roleVo) {
+        // 角色名重复
+        if(!isUniqueRoleName(roleVo.getRoleName())){
+            return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
+        }
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(roleVo, sysRole);
         roleMapper.updateById(sysRole);
@@ -64,5 +66,20 @@ public class RoleService {
 
     public Result getRole(Integer id) {
         return Result.success(roleMapper.selectById(id));
+    }
+
+    /**
+     * 角色名唯一
+     *
+     * @param roleName
+     * @return
+     */
+    private boolean isUniqueRoleName(String roleName){
+        QueryWrapper<SysRole> sysRoleQueryWrapper = new QueryWrapper<>();
+        sysRoleQueryWrapper.eq("role_name", roleName);
+        if (CollectionUtil.isNotEmpty(roleMapper.selectList(sysRoleQueryWrapper))) {
+            return false;
+        }
+        return true;
     }
 }
