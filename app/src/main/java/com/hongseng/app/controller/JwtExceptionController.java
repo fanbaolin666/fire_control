@@ -24,15 +24,12 @@ public class JwtExceptionController {
     public void expiredJwtException(HttpServletRequest request) throws ExpiredJwtException, RefreshTokenException {
         if (request.getAttribute("expiredJwtException") instanceof ExpiredJwtException) {
             throw ((ExpiredJwtException) request.getAttribute("expiredJwtException"));
-        } else {
-            throw new RefreshTokenException();
         }
+        throw new RefreshTokenException();
     }
 
     @RequestMapping("/signatureException")
     public void signatureException(HttpServletRequest request) throws SignatureException {
         throw ((SignatureException) request.getAttribute("signatureException"));
     }
-
-
 }

@@ -32,7 +32,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     /**
      * 防止并发修改token，使用ThreadLocal
      */
-    private static ThreadLocal<String> token = null;
+    private static ThreadLocal<String> token = new ThreadLocal<>();
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -53,7 +53,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         // 如果请求头中有token，则进行解析，并且设置认证信息
         try {
-            if (JWTAuthorizationFilter.token != null) {
+            if (JWTAuthorizationFilter.token.get() != null) {
                 refreshToken(token.get());
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(token.get()));
             } else {
@@ -65,7 +65,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             request.setAttribute("expiredJwtException", e);
             //将异常分发到/expiredJwtException控制器
             request.getRequestDispatcher("/expiredJwtException").forward(request, response);
-        } catch (AccessDeniedException | SignatureException e) {
+        } catch (SignatureException e) {
             // 异常捕获，发送到signatureException
             request.setAttribute("signatureException", e);
             //将异常分发到/signatureException控制器
@@ -102,7 +102,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         // 客户端token有没有过期
         boolean expiration = JwtTokenUtils.isExpiration(token);
         // 是否过期时间已将超出两倍
-        if(expiration){
+        if (expiration) {
             boolean twoTimesTokenExpiration = JwtTokenUtils.isTwoTimesTokenExpiration(token);
             // 没有，续期，否则抛出自定义异常
             if (!twoTimesTokenExpiration) {
