@@ -40,7 +40,7 @@ ErrorCodeEnum {
     SYS_ERR_VALIDATION_PARAMS_TYPE_ERROR(3003, "请求参数校验失败，{0}:参数类型为{1}"),
     SYS_ERR_VALIDATION_PARAMS_JSON_TYPE_ERROR(3004, "请求参数校验失败，{0}：JSON格式不正确"),
     SYS_ERR_VALIDATION_BODY_JSON_TYPE_ERROR(3005, "请求参数校验失败，请求体JSON格式不正确"),
-    SYS_ERR_LOGIN_FAIL(3006, "登录失败，用户名或密码错误！"),
+    SYS_ERR_LOGIN_FAIL(3006, "登录失败，用户名密码错误或该账号已被禁用！"),
     SYS_ERR_PHONE(3007, "座机格式错误"),
     SYS_ERR_PLAN_NAME_REPEAT(3008, "预案名称已存在！"),
     SYS_ERR_ACCIDENT_TYPE_REPEAT(3009, "事故类型已存在！"),

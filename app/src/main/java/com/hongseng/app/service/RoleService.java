@@ -7,8 +7,8 @@ import com.github.pagehelper.PageInfo;
 import com.hongseng.app.mapper.RoleMapper;
 import enums.ErrorCodeEnum;
 import model.SysRole;
-import model.vo.InsertRoleVo;
-import model.vo.UpdateRoleVo;
+import model.dto.InsertRoleDto;
+import model.dto.UpdateRoleDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class RoleService {
 
     }
 
-    public Result insertRole(InsertRoleVo roleVo) {
+    public Result insertRole(InsertRoleDto roleVo) {
         // 角色名重复
         if(isUniqueRoleName(roleVo.getRoleName())){
             return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
@@ -48,13 +48,13 @@ public class RoleService {
         return Result.success();
     }
 
-    public Result updateRole(UpdateRoleVo roleVo) {
+    public Result updateRole(UpdateRoleDto roleDto) {
         // 角色名重复
-        if(isUniqueRoleName(roleVo.getRoleName())){
+        if(isUniqueRoleName(roleDto.getRoleName())){
             return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
         }
         SysRole sysRole = new SysRole();
-        BeanUtils.copyProperties(roleVo, sysRole);
+        BeanUtils.copyProperties(roleDto, sysRole);
         roleMapper.updateById(sysRole);
         return Result.success();
     }

@@ -2,7 +2,11 @@ package com.hongseng.app.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import model.RolePermission;
+import model.SysPermission;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @program: fire_control
@@ -12,4 +16,9 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface RolePermissionMapper extends BaseMapper<RolePermission> {
+
+
+    @Select("SELECT id,menu_name menuName ,code ,menu_grade menuGrade,father_id fatherId  from sys_permission ")
+    List<SysPermission> permissionList();
+
 }

@@ -1,4 +1,4 @@
-package model.vo;
+package model.dto;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @create: 2021-01-18 11:00
  **/
 @Data
-public class UAndDAndIUserRoleVo {
+public class UAndDAndIUserRoleDto {
     @NotNull
     private Integer userId;
 

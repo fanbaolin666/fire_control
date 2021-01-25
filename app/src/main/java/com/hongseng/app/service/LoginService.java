@@ -58,7 +58,7 @@ public class LoginService {
         String password = user.getPassword();
         // 用户名是否存在
         QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.eq("user_name", userName);
+        userQueryWrapper.eq("user_name", userName).eq("is_disable",true);
         SysUser userInfo = userMapper.selectOne(userQueryWrapper);
         if (null == userInfo) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);

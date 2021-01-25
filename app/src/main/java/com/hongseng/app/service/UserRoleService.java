@@ -8,9 +8,10 @@ import com.hongseng.app.mapper.UserRoleMapper;
 import enums.ErrorCodeEnum;
 import model.SysRole;
 import model.UserRole;
-import model.vo.UAndDAndIUserRoleVo;
+import model.dto.UAndDAndIUserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import result.CommonConstants;
 import result.Result;
 
@@ -54,12 +55,13 @@ public class UserRoleService {
      * @Date 11:55 2021/1/18
      * @Param UpdateAndDeleteUserRoleDto
      */
-    public Result updateUserRole(UAndDAndIUserRoleVo userRoleVo) {
+    @Transactional(rollbackFor = Exception.class)
+    public Result updateUserRole(UAndDAndIUserRoleDto userRoleDto) {
         // 删除用户下所有的角色
         QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
-        userRoleQueryWrapper.eq("user_id", userRoleVo.getUserId());
+        userRoleQueryWrapper.eq("user_id", userRoleDto.getUserId());
         userRoleMapper.delete(userRoleQueryWrapper);
-        insertRoles(userRoleVo);
+        insertRoles(userRoleDto);
         return Result.success();
     }
 
@@ -70,10 +72,10 @@ public class UserRoleService {
      * @Date 11:55 2021/1/18
      * @Param UpdateAndDeleteUserRoleDto
      */
-    public Result deleteUserRole(UAndDAndIUserRoleVo userRoleVo) {
+    public Result deleteUserRole(UAndDAndIUserRoleDto userRoleDto) {
         QueryWrapper<UserRole> userRoleQueryWrapper = new QueryWrapper<>();
-        userRoleQueryWrapper.eq("user_id", userRoleVo.getUserId());
-        userRoleQueryWrapper.in("role_id", userRoleVo.getRoleId());
+        userRoleQueryWrapper.eq("user_id", userRoleDto.getUserId());
+        userRoleQueryWrapper.in("role_id", userRoleDto.getRoleId());
         int delete = userRoleMapper.delete(userRoleQueryWrapper);
         if (delete == CommonConstants.DeleteCodeStatus.IS_NOT_DELETE) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_DELETE_FAILED);
@@ -88,16 +90,16 @@ public class UserRoleService {
      * @Date 11:55 2021/1/18
      * @Param UpdateAndDeleteUserRoleDto
      */
-    public Result insertUserRole(UAndDAndIUserRoleVo userRoleVo) {
-        insertRoles(userRoleVo);
+    public Result insertUserRole(UAndDAndIUserRoleDto userRoleDto) {
+        insertRoles(userRoleDto);
         return Result.success();
     }
 
-    private void insertRoles(UAndDAndIUserRoleVo userRoleVo) {
-        List<Integer> roleId = userRoleVo.getRoleId();
+    private void insertRoles(UAndDAndIUserRoleDto userRoleDto) {
+        List<Integer> roleId = userRoleDto.getRoleId();
         UserRole userRole = new UserRole();
         for (Integer id : roleId) {
-            userRole.setUserId(userRoleVo.getUserId());
+            userRole.setUserId(userRoleDto.getUserId());
             userRole.setRoleId(id);
             userRoleMapper.insert(userRole);
         }

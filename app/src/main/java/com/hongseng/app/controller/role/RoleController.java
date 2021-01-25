@@ -3,8 +3,8 @@ package com.hongseng.app.controller.role;
 import com.hongseng.app.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import model.vo.InsertRoleVo;
-import model.vo.UpdateRoleVo;
+import model.dto.InsertRoleDto;
+import model.dto.UpdateRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -38,15 +38,15 @@ public class RoleController {
     @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('0001')")
     @ApiOperation(value = "新增角色信息")
-    public Result insertRole(@RequestBody @Validated InsertRoleVo roleVo) {
-        return roleService.insertRole(roleVo);
+    public Result insertRole(@RequestBody @Validated InsertRoleDto roleDto) {
+        return roleService.insertRole(roleDto);
     }
 
     @PutMapping("/role")
     @PreAuthorize("hasAnyAuthority('0001')")
     @ApiOperation(value = "修改角色信息")
-    public Result updateRole(@RequestBody UpdateRoleVo roleVo) {
-        return roleService.updateRole(roleVo);
+    public Result updateRole(@RequestBody UpdateRoleDto roleDto) {
+        return roleService.updateRole(roleDto);
     }
 
 

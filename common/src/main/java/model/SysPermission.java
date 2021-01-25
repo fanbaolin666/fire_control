@@ -18,8 +18,14 @@ public class SysPermission {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
+    @TableField("father_id")
+    private Integer fatherId;
+
     @TableField("menu_name")
     private String menuName;
 
     private String code;
+
+    @TableField("menu_grade")
+    private Integer menuGrade;
 }

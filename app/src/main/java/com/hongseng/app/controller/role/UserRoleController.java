@@ -3,7 +3,7 @@ package com.hongseng.app.controller.role;
 import com.hongseng.app.service.UserRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import model.vo.UAndDAndIUserRoleVo;
+import model.dto.UAndDAndIUserRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,21 +37,21 @@ public class UserRoleController {
     @PostMapping("/user-role")
     @PreAuthorize("hasAnyAuthority('0001')")
     @ApiOperation(value = "修改用户角色信息")
-    public Result updateUserRole(@Validated @RequestBody UAndDAndIUserRoleVo userRoleVo) {
-        return userRoleService.updateUserRole(userRoleVo);
+    public Result updateUserRole(@Validated @RequestBody UAndDAndIUserRoleDto userRoleDto) {
+        return userRoleService.updateUserRole(userRoleDto);
     }
 
     @DeleteMapping("/user-role")
     @PreAuthorize("hasAnyAuthority('0001')")
     @ApiOperation(value = "删除用户角色信息")
-    public Result deleteUserRole(@Validated @RequestBody UAndDAndIUserRoleVo userRoleVo) {
-        return userRoleService.deleteUserRole(userRoleVo);
+    public Result deleteUserRole(@Validated @RequestBody UAndDAndIUserRoleDto userRoleDto) {
+        return userRoleService.deleteUserRole(userRoleDto);
     }
 
     @PutMapping("/user-role")
     @PreAuthorize("hasAnyAuthority('0001')")
     @ApiOperation(value = "新增用户角色信息")
-    public Result insertUserRole(@Validated @RequestBody UAndDAndIUserRoleVo userRoleVo) {
-        return userRoleService.insertUserRole(userRoleVo);
+    public Result insertUserRole(@Validated @RequestBody UAndDAndIUserRoleDto userRoleDto) {
+        return userRoleService.insertUserRole(userRoleDto);
     }
 }

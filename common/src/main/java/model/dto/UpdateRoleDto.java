@@ -1,4 +1,4 @@
-package model.vo;
+package model.dto;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @create: 2021-01-19 10:30
  **/
 @Data
-public class UpdateRoleVo {
+public class UpdateRoleDto {
 
     @NotNull
     private Integer id;

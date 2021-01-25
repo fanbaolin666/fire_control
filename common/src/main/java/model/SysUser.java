@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.Instant;
 
 
 /**
@@ -24,5 +25,14 @@ public class SysUser {
     private String userName;
 
     private String password;
+
+    @TableField("is_disable")
+    private Boolean disable;
+
+    @TableField("create_time")
+    private Instant createTime;
+
+    @TableField("update_time")
+    private Instant updateTime;
 
 }

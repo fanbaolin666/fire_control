@@ -16,10 +16,11 @@ public class LocalDateTest {
         LocalDate date1 = now.withYear(2022);
 
 
-        Period of = Period.of(2021, 2, 3);
-        System.out.println(of.toString());
+        Period period = Period.of(2021, 2, 3);
+        System.out.println("period------>" +period.toString());
 
-        Instant now1 = Instant.now();
-        System.out.println(now1.toString());
+        Instant instant = Instant.now();
+        System.out.println("instant---->" + instant.toString());
+
     }
 }
