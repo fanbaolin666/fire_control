@@ -69,7 +69,7 @@ public class LoginService {
 
 
         boolean flag = passwordEncoder.matches(password, userInfo.getPassword());
-        if (!flag) {
+        if (!flag || !userInfo.getDisable()) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);
         }
         Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
@@ -109,7 +109,7 @@ public class LoginService {
         List<SysPermission> sysPermissions = permissionMapper.selectList(permissionQueryWrapper);
         UserRolePermissionDto userRolePermissionDto = new UserRolePermissionDto();
         BeanUtils.copyProperties(userInfo, userRolePermissionDto);
-        userRolePermissionDto.setCode(sysPermissions.stream().map(SysPermission::getCode).collect(Collectors.joining(",")));
+        userRolePermissionDto.setCode(sysPermissions.stream().map(SysPermission::getCode).distinct().collect(Collectors.joining(",")));
         return userRolePermissionDto;
     }
 }

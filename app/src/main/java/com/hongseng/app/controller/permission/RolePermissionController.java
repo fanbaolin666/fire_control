@@ -7,10 +7,7 @@ import model.dto.UpdatePermissionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import result.Result;
 
 
@@ -29,14 +26,21 @@ public class RolePermissionController {
     RolePermissionService rolePermissionService;
 
     @GetMapping("/permission")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0018')")
     @ApiOperation(value = "分级展示所有权限信息")
     public Result permissionList() {
         return rolePermissionService.permissionList();
     }
 
+    @GetMapping("/role-permission/{roleId}")
+    @PreAuthorize("hasAnyAuthority('0018')")
+    @ApiOperation(value = "展示角色权限码")
+    public Result userPermission(@PathVariable Integer roleId) {
+        return rolePermissionService.userPermission(roleId);
+    }
+
     @PutMapping("/permission")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0148')")
     @ApiOperation(value = "设置角色权限信息")
     public Result updatePermission(@RequestBody @Validated UpdatePermissionDto updatePermissionDto) {
         return rolePermissionService.updatePermission(updatePermissionDto);

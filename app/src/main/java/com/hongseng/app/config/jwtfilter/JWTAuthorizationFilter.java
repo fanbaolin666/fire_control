@@ -32,7 +32,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     /**
      * 防止并发修改token，使用ThreadLocal
      */
-    private static ThreadLocal<String> token = new ThreadLocal<>();
+    private static ThreadLocal<String> TOKEN = new ThreadLocal<>();
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -47,15 +47,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String tokenHeader = request.getHeader(TokenEnum.TOKEN_HEADER.getValue());
         // 如果请求头中没有Authorization信息或者是登录接口直接放行了
         if (tokenHeader == null || !tokenHeader.startsWith(TokenEnum.TOKEN_PREFIX.getValue()) || request.getRequestURL().toString().contains(LOGIN_URL)) {
+            TOKEN.remove();
             chain.doFilter(request, response);
             return;
         }
 
         // 如果请求头中有token，则进行解析，并且设置认证信息
         try {
-            if (JWTAuthorizationFilter.token.get() != null) {
-                refreshToken(token.get());
-                SecurityContextHolder.getContext().setAuthentication(getAuthentication(token.get()));
+            if (JWTAuthorizationFilter.TOKEN.get() != null) {
+                refreshToken(TOKEN.get());
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(TOKEN.get()));
             } else {
                 refreshToken(tokenHeader);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
@@ -65,7 +66,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             request.setAttribute("expiredJwtException", e);
             //将异常分发到/expiredJwtException控制器
             request.getRequestDispatcher("/expiredJwtException").forward(request, response);
-        } catch (SignatureException e) {
+        } catch (SignatureException | AccessDeniedException e) {
             // 异常捕获，发送到signatureException
             request.setAttribute("signatureException", e);
             //将异常分发到/signatureException控制器
@@ -108,7 +109,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             if (!twoTimesTokenExpiration) {
                 String username = JwtTokenUtils.getUsername(token);
                 String permission = JwtTokenUtils.getUserPermission(token);
-                JWTAuthorizationFilter.token.set(JwtTokenUtils.createToken(username, permission, false));
+                JWTAuthorizationFilter.TOKEN.set(JwtTokenUtils.createToken(username, permission, false));
             } else {
                 throw new RefreshTokenException();
             }

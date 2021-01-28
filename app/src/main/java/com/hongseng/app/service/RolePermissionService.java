@@ -2,6 +2,7 @@ package com.hongseng.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hongseng.app.mapper.PermissionMapper;
 import com.hongseng.app.mapper.RolePermissionMapper;
 import enums.ErrorCodeEnum;
 import model.RolePermission;
@@ -30,11 +31,60 @@ public class RolePermissionService extends ServiceImpl<RolePermissionMapper,Role
     @Autowired
     RolePermissionMapper rolePermissionMapper;
 
+    @Autowired
+    PermissionMapper permissionMapper;
+
+
     public Result permissionList() {
         List<SysPermission> permissionList = rolePermissionMapper.permissionList();
+        List<PermissionVo> permissionVo = getPermissionVo(permissionList);
+        return Result.success(permissionVo);
+    }
 
+    @Transactional(rollbackFor = Exception.class)
+    public Result updatePermission(UpdatePermissionDto updatePermissionDto){
+        QueryWrapper<RolePermission> rolePermissionQueryWrapper = new QueryWrapper<>();
+        rolePermissionQueryWrapper.eq("role_id",updatePermissionDto.getRoleId());
+        // 删除角色所有权限
+        rolePermissionMapper.delete(rolePermissionQueryWrapper);
+        // 新增新的权限
+        List<Integer> permissionIds = updatePermissionDto.getPermissionIds();
+
+        ArrayList<RolePermission> rolePermissions = new ArrayList<>();
+        RolePermission rolePermission = null;
+        for (Integer permissionId : permissionIds) {
+            rolePermission = new RolePermission();
+            rolePermission.setPermissionId(permissionId);
+            rolePermission.setRoleId(updatePermissionDto.getRoleId());
+            rolePermissions.add(rolePermission);
+        }
+
+        boolean res = saveBatch(rolePermissions);
+        if(!res){
+            return Result.failure(ErrorCodeEnum.SYS_ERR_UPDATE_FAILED);
+        }
+        return Result.success();
+    }
+
+    public Result userPermission(Integer roleId){
+        List<Integer> permissionIds = rolePermissionMapper.getPermissionIds(roleId);
+        QueryWrapper<SysPermission> sysPermissionQueryWrapper = new QueryWrapper<>();
+        sysPermissionQueryWrapper.in("id",permissionIds);
+        List<SysPermission> permissionList = permissionMapper.selectList(sysPermissionQueryWrapper);
+        List<String> codes = permissionList.stream().map(SysPermission::getCode).collect(Collectors.toList());
+        return Result.success(codes);
+    }
+
+
+    /**
+     * @Author fbl
+     * @Description 分层展示权限信息
+     * @Date 16:03 2021/1/25
+     * @Param permissionList
+     * @return List<PermissionVo>
+    */
+    private List<PermissionVo> getPermissionVo(List<SysPermission> permissionList){
         ArrayList<PermissionVo> onePermissionDto = new ArrayList<>();
-
         // 一级权限
         List<SysPermission> onePermission = permissionList.stream().filter(p -> p.getMenuGrade() == 1).collect(Collectors.toList());
         PermissionVo permissionVo = null;
@@ -71,31 +121,6 @@ public class RolePermissionService extends ServiceImpl<RolePermissionMapper,Role
                 }
             }
         }
-        return Result.success(onePermissionDto);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
-    public Result updatePermission(UpdatePermissionDto updatePermissionDto){
-        QueryWrapper<RolePermission> rolePermissionQueryWrapper = new QueryWrapper<>();
-        rolePermissionQueryWrapper.eq("role_id",updatePermissionDto.getRoleId());
-        // 删除角色所有权限
-        rolePermissionMapper.delete(rolePermissionQueryWrapper);
-        // 新增新的权限
-        List<Integer> permissionIds = updatePermissionDto.getPermissionIds();
-
-        ArrayList<RolePermission> rolePermissions = new ArrayList<>();
-        RolePermission rolePermission = null;
-        for (Integer permissionId : permissionIds) {
-            rolePermission = new RolePermission();
-            rolePermission.setPermissionId(permissionId);
-            rolePermission.setRoleId(updatePermissionDto.getRoleId());
-            rolePermissions.add(rolePermission);
-        }
-
-        boolean res = saveBatch(rolePermissions);
-        if(!res){
-            return Result.failure(ErrorCodeEnum.SYS_ERR_UPDATE_FAILED);
-        }
-        return Result.success();
+        return onePermissionDto;
     }
 }

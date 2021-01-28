@@ -28,7 +28,7 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping("/role")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0018')")
     @ApiOperation(value = "展示角色信息")
     public Result roleList(@NotNull Integer pageSize, @NotNull Integer pageNum) {
         return roleService.roleList(pageSize, pageNum);
@@ -36,14 +36,14 @@ public class RoleController {
 
 
     @PostMapping("/role")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0118')")
     @ApiOperation(value = "新增角色信息")
     public Result insertRole(@RequestBody @Validated InsertRoleDto roleDto) {
         return roleService.insertRole(roleDto);
     }
 
     @PutMapping("/role")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0128')")
     @ApiOperation(value = "修改角色信息")
     public Result updateRole(@RequestBody UpdateRoleDto roleDto) {
         return roleService.updateRole(roleDto);
@@ -51,7 +51,7 @@ public class RoleController {
 
 
     @DeleteMapping("/role/{id}")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0138')")
     @ApiOperation(value = "删除角色信息")
     public Result deleteRole(@PathVariable Integer id) {
         return roleService.deleteRole(id);
@@ -59,7 +59,7 @@ public class RoleController {
 
 
     @GetMapping("/role/{id}")
-    @PreAuthorize("hasAnyAuthority('0001')")
+    @PreAuthorize("hasAnyAuthority('0128')")
     @ApiOperation(value = "查询角色详情")
     public Result getRole(@PathVariable Integer id) {
         return roleService.getRole(id);

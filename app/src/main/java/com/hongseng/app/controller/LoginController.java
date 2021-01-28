@@ -1,7 +1,9 @@
 package com.hongseng.app.controller;
 
 import annotation.AnonymousAccess;
+import com.hongseng.app.config.jwtfilter.JWTAuthorizationFilter;
 import com.hongseng.app.service.LoginService;
+import enums.TokenEnum;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import result.Result;
+import utils.JwtTokenUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
@@ -35,11 +38,10 @@ public class LoginController {
         return loginService.login(user);
     }
 
-    @GetMapping("/preAuthorize")
-    @PreAuthorize("hasAnyAuthority('0001')")
-    public String test(){
-        return "PreAuthorize is ok";
+    @GetMapping("/login-expiration")
+    @AnonymousAccess
+    public Boolean loginExpiration(String tokenHeader){
+        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
+        return JwtTokenUtils.isExpiration(token);
     }
-
-
 }
