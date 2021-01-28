@@ -11,7 +11,7 @@
  Target Server Version : 50717
  File Encoding         : 65001
 
- Date: 21/01/2021 15:27:39
+ Date: 26/01/2021 08:14:16
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,10 @@ CREATE TABLE `role_permission`  (
 -- ----------------------------
 INSERT INTO `role_permission` VALUES (1, 1);
 INSERT INTO `role_permission` VALUES (1, 2);
-INSERT INTO `role_permission` VALUES (2, 2);
+INSERT INTO `role_permission` VALUES (1, 3);
+INSERT INTO `role_permission` VALUES (2, 1);
+INSERT INTO `role_permission` VALUES (1, 4);
+INSERT INTO `role_permission` VALUES (1, 5);
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -39,16 +42,21 @@ INSERT INTO `role_permission` VALUES (2, 2);
 DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `menu_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单名字',
-  `code` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '菜单权限码',
+  `menu_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单名字',
+  `code` char(4) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '菜单权限码',
+  `menu_grade` tinyint(1) NOT NULL COMMENT '菜单级别',
+  `father_id` int(11) NULL DEFAULT NULL COMMENT '父级菜单id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_permission
 -- ----------------------------
-INSERT INTO `sys_permission` VALUES (1, '角色管理', '0001');
-INSERT INTO `sys_permission` VALUES (2, '列表页', '0002');
+INSERT INTO `sys_permission` VALUES (1, '内部管理', '0001', 1, 0);
+INSERT INTO `sys_permission` VALUES (2, '列表页', '0002', 1, 0);
+INSERT INTO `sys_permission` VALUES (3, '角色管理', '0011', 2, 1);
+INSERT INTO `sys_permission` VALUES (4, '新增', '0111', 3, 3);
+INSERT INTO `sys_permission` VALUES (5, '编辑', '0112', 3, 3);
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -59,7 +67,7 @@ CREATE TABLE `sys_role`  (
   `role_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色名',
   `role_desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
@@ -80,7 +88,7 @@ CREATE TABLE `sys_user`  (
   `is_disable` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0 禁用 1 可用',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name_idx`(`user_name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user

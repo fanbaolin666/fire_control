@@ -58,7 +58,7 @@ public class LoginService {
         String password = user.getPassword();
         // 用户名是否存在
         QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.eq("user_name", userName).eq("is_disable",true);
+        userQueryWrapper.eq("user_name", userName).eq("is_available",true);
         SysUser userInfo = userMapper.selectOne(userQueryWrapper);
         if (null == userInfo) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);
@@ -69,7 +69,7 @@ public class LoginService {
 
 
         boolean flag = passwordEncoder.matches(password, userInfo.getPassword());
-        if (!flag || !userInfo.getDisable()) {
+        if (!flag || !userInfo.getAvailable()) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);
         }
         Collection<? extends GrantedAuthority> authorities = jwtUser.getAuthorities();
