@@ -26,35 +26,35 @@ public class DepartmentController {
     DepartmentService departmentService;
 
     @GetMapping("/department")
-    @PreAuthorize("hasAnyAuthority('0218')")
+    @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "分级展示所有部门信息")
     public Result departmentList() {
         return departmentService.departmentList();
     }
 
     @GetMapping("/department/{id}")
-    @PreAuthorize("hasAnyAuthority('0218')")
+    @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "展示部门详情")
     public Result departmentDetail(@PathVariable Integer id) {
         return departmentService.departmentDetail(id);
     }
 
     @PostMapping("/department")
-    @PreAuthorize("hasAnyAuthority('0218')")
+    @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "增加部门信息")
     public Result insertDepartment(@RequestBody @Validated InsertDepartmentDto insertDepartmentDto) {
         return departmentService.insertDepartment(insertDepartmentDto);
     }
 
     @PutMapping("/department")
-    @PreAuthorize("hasAnyAuthority('0218')")
+    @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "修改部门信息")
     public Result updateDepartment(@RequestBody @Validated UpdateDepartmentDto updateDepartmentDto) {
         return departmentService.updateDepartment(updateDepartmentDto);
     }
 
     @DeleteMapping("/department/{id}")
-    @PreAuthorize("hasAnyAuthority('0218')")
+    @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "删除部门信息")
     public Result deleteDepartment(@PathVariable Integer id) {
         return departmentService.deleteDepartment(id);

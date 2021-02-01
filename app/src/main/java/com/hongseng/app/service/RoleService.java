@@ -49,10 +49,6 @@ public class RoleService {
     }
 
     public Result updateRole(UpdateRoleDto roleDto) {
-        // 角色名重复
-        if(isUniqueRoleName(roleDto.getRoleName())){
-            return Result.failure(ErrorCodeEnum.SYS_ERR_ROLE_REPETITION);
-        }
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(roleDto, sysRole);
         roleMapper.updateById(sysRole);

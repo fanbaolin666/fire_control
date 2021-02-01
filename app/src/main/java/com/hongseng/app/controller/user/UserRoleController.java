@@ -1,4 +1,4 @@
-package com.hongseng.app.controller.role;
+package com.hongseng.app.controller.user;
 
 import com.hongseng.app.service.UserRoleService;
 import io.swagger.annotations.Api;
