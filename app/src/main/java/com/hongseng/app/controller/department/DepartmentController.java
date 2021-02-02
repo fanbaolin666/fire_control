@@ -3,6 +3,7 @@ package com.hongseng.app.controller.department;
 import com.hongseng.app.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import model.dto.DeleteDepartmentDto;
 import model.dto.InsertDepartmentDto;
 import model.dto.UpdateDepartmentDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import result.Result;
+
 
 /**
  * @program: fire_control
@@ -53,11 +55,11 @@ public class DepartmentController {
         return departmentService.updateDepartment(updateDepartmentDto);
     }
 
-    @DeleteMapping("/department/{id}")
+    @PostMapping("/del-department")
     @PreAuthorize("hasAnyAuthority('0028')")
     @ApiOperation(value = "删除部门信息")
-    public Result deleteDepartment(@PathVariable Integer id) {
-        return departmentService.deleteDepartment(id);
+    public Result deleteDepartment(@RequestBody @Validated DeleteDepartmentDto deleteDepartmentDto) {
+        return departmentService.deleteDepartment(deleteDepartmentDto);
     }
 
 }

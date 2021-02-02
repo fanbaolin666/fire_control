@@ -9,7 +9,7 @@ import lombok.Data;
  * @create: 2020-12-08 08:15
  **/
 @Data
-public class UserVo {
+public class JwtUserVo {
     private String userName;
     private String password;
     private String token;

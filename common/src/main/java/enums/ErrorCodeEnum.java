@@ -51,7 +51,9 @@ ErrorCodeEnum {
     SYS_ERR_TOKEN_EXPIRED(3013, "签名已经过期！"),
     SYS_ERR_TOKEN_SIGNATURE(3013, "非法签名！"),
 
-    SYS_ERR_ROLE_REPETITION(3014, "角色名重复！");
+    SYS_ERR_ROLE_REPETITION(3014, "角色名重复！"),
+    SYS_ERR_DEPARTMENT_REPETITION(3015, "部门名重复！"),
+    SYS_ERR_DELETE_DEPARTMENT(3016, "部门包含人员，无法删除！");
 
     /****************************** 分隔符 **************************************/
 

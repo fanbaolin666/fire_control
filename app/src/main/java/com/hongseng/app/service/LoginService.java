@@ -9,7 +9,7 @@ import enums.ErrorCodeEnum;
 import model.*;
 import model.dto.UserDto;
 import model.dto.UserRolePermissionDto;
-import model.vo.UserVo;
+import model.vo.JwtUserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,8 +18,13 @@ import org.springframework.stereotype.Service;
 import result.Result;
 import utils.JwtTokenUtils;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -60,9 +65,13 @@ public class LoginService {
         QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("user_name", userName).eq("is_available",true);
         SysUser userInfo = userMapper.selectOne(userQueryWrapper);
-        if (null == userInfo) {
+        if (Objects.isNull(userInfo)) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_LOGIN_FAIL);
         }
+        // 刷新用户最后登录时间
+        userInfo.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
+        userMapper.updateById(userInfo);
+
         // 得到用户权限
         UserRolePermissionDto userRolePermissionDto = getUserRole(userInfo);
         JwtUser jwtUser = new JwtUser(userRolePermissionDto);
@@ -78,7 +87,7 @@ public class LoginService {
         String token = JwtTokenUtils.createToken(userName, strAuthorities, false);
 
         // 模型转换
-        UserVo userVo = new UserVo();
+        JwtUserVo userVo = new JwtUserVo();
         BeanUtils.copyProperties(user, userVo);
         userVo.setPassword(userInfo.getPassword());
         userVo.setToken(token);

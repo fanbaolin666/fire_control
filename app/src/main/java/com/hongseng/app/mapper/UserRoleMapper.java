@@ -2,7 +2,10 @@ package com.hongseng.app.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import model.UserRole;
+import model.dto.InsertUserRoleDto;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @program: fire_control
@@ -12,4 +15,8 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface UserRoleMapper extends BaseMapper<UserRole> {
+
+   Integer insertUserRole(List<InsertUserRoleDto> userRoleDtos);
+
+   List<String> selectRoleName(Integer userId);
 }

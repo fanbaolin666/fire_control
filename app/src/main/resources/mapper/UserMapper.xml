@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongseng.app.mapper.UserMapper">
+
+    <select id="listUser" resultType="model.vo.SelectUserVo">
+        SELECT DISTINCT
+            su.id ,su.user_name userName,su.is_available available ,department_name departmentName,sex,telephone,mobile,email,last_login_time lastLoginTime
+        from
+            sys_user su
+        LEFT JOIN
+            user_role ur on su.id = ur.user_id
+        LEFT JOIN
+            sys_role sr on sr.id = ur.role_id
+        LEFT JOIN
+            department on su.department_id = department.id
+        <if test="userId  != null">
+            where su.id = #{userId}
+        </if>
+    </select>
+</mapper>

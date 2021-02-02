@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 
 
 /**
@@ -38,5 +37,16 @@ public class SysUser {
 
     @TableField("update_time")
     private Timestamp updateTime;
+
+    private Integer sex;
+
+    private String telephone;
+
+    private Integer mobile;
+
+    private String email;
+
+    @TableField("last_login_time")
+    private Timestamp lastLoginTime;
 
 }

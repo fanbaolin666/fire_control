@@ -37,11 +37,4 @@ public class LoginController {
     public Result login(@RequestBody @Validated UserDto user){
         return loginService.login(user);
     }
-
-    @GetMapping("/login-expiration")
-    @AnonymousAccess
-    public Boolean loginExpiration(String tokenHeader){
-        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
-        return JwtTokenUtils.isExpiration(token);
-    }
 }

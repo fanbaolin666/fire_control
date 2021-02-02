@@ -1,5 +1,6 @@
 package com.hongseng.app.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hongseng.app.mapper.PermissionMapper;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
  * @create: 2021-01-22 15:21
  **/
 @Service
-public class RolePermissionService extends ServiceImpl<RolePermissionMapper,RolePermission> {
+public class RolePermissionService extends ServiceImpl<RolePermissionMapper, RolePermission> {
 
     @Autowired
     RolePermissionMapper rolePermissionMapper;
@@ -42,9 +43,9 @@ public class RolePermissionService extends ServiceImpl<RolePermissionMapper,Role
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Result updatePermission(UpdatePermissionDto updatePermissionDto){
+    public Result updatePermission(UpdatePermissionDto updatePermissionDto) {
         QueryWrapper<RolePermission> rolePermissionQueryWrapper = new QueryWrapper<>();
-        rolePermissionQueryWrapper.eq("role_id",updatePermissionDto.getRoleId());
+        rolePermissionQueryWrapper.eq("role_id", updatePermissionDto.getRoleId());
         // 删除角色所有权限
         rolePermissionMapper.delete(rolePermissionQueryWrapper);
         // 新增新的权限
@@ -60,16 +61,16 @@ public class RolePermissionService extends ServiceImpl<RolePermissionMapper,Role
         }
 
         boolean res = saveBatch(rolePermissions);
-        if(!res){
+        if (!res) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_UPDATE_FAILED);
         }
         return Result.success();
     }
 
-    public Result userPermission(Integer roleId){
+    public Result userPermission(Integer roleId) {
         List<Integer> permissionIds = rolePermissionMapper.getPermissionIds(roleId);
         QueryWrapper<SysPermission> sysPermissionQueryWrapper = new QueryWrapper<>();
-        sysPermissionQueryWrapper.in("id",permissionIds);
+        sysPermissionQueryWrapper.in("id", permissionIds);
         List<SysPermission> permissionList = permissionMapper.selectList(sysPermissionQueryWrapper);
         List<String> codes = permissionList.stream().map(SysPermission::getCode).collect(Collectors.toList());
         return Result.success(codes);
@@ -77,47 +78,48 @@ public class RolePermissionService extends ServiceImpl<RolePermissionMapper,Role
 
 
     /**
+     * @return List<PermissionVo>
      * @Author fbl
      * @Description 分层展示权限信息
      * @Date 16:03 2021/1/25
      * @Param permissionList
-     * @return List<PermissionVo>
-    */
-    private List<PermissionVo> getPermissionVo(List<SysPermission> permissionList){
+     */
+    private List<PermissionVo> getPermissionVo(List<SysPermission> permissionList) {
         ArrayList<PermissionVo> onePermissionDto = new ArrayList<>();
         // 一级权限
         List<SysPermission> onePermission = permissionList.stream().filter(p -> p.getMenuGrade() == 1).collect(Collectors.toList());
+        // 二级权限
+        List<SysPermission> twoPermission = permissionList.stream().filter(p -> p.getMenuGrade() == 2).collect(Collectors.toList());
+        // 三级权限
+        List<SysPermission> threePermission = permissionList.stream().filter(p -> p.getMenuGrade() == 3).collect(Collectors.toList());
+
         PermissionVo permissionVo = null;
         for (SysPermission one : onePermission) {
             permissionVo = new PermissionVo();
-            BeanUtils.copyProperties(one,permissionVo);
+            BeanUtils.copyProperties(one, permissionVo);
             onePermissionDto.add(permissionVo);
         }
-
-        // 二级权限
-        List<SysPermission> twoPermission = permissionList.stream().filter(p -> p.getMenuGrade() == 2).collect(Collectors.toList());
-        ArrayList<PermissionVo> twoPermissionDto = new ArrayList<>();
+        ArrayList<PermissionVo> twoPermissionDto;
         for (PermissionVo one : onePermissionDto) {
+            twoPermissionDto = new ArrayList<>();
             for (SysPermission two : twoPermission) {
-                if(one.getId().equals(two.getFatherId())){
+                if (one.getId().equals(two.getFatherId())) {
                     permissionVo = new PermissionVo();
-                    BeanUtils.copyProperties(two,permissionVo);
+                    BeanUtils.copyProperties(two, permissionVo);
                     twoPermissionDto.add(permissionVo);
                     one.setPermissionVo(twoPermissionDto);
                 }
             }
-        }
-
-        // 三级权限
-        List<SysPermission> threePermission = permissionList.stream().filter(p -> p.getMenuGrade() == 3).collect(Collectors.toList());
-        ArrayList<PermissionVo> threePermissionDto = new ArrayList<>();
-        for (PermissionVo two : twoPermissionDto) {
-            for (SysPermission three : threePermission) {
-                if(two.getId().equals(three.getFatherId())){
-                    permissionVo = new PermissionVo();
-                    BeanUtils.copyProperties(three,permissionVo);
-                    threePermissionDto.add(permissionVo);
-                    two.setPermissionVo(threePermissionDto);
+            ArrayList<PermissionVo> threePermissionDto;
+            for (PermissionVo two : twoPermissionDto) {
+                threePermissionDto  = new ArrayList<>();
+                for (SysPermission three : threePermission) {
+                    if (two.getId().equals(three.getFatherId())) {
+                        permissionVo = new PermissionVo();
+                        BeanUtils.copyProperties(three, permissionVo);
+                        threePermissionDto.add(permissionVo);
+                        two.setPermissionVo(threePermissionDto);
+                    }
                 }
             }
         }
