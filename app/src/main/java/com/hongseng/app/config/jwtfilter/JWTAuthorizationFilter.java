@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @program: spring-security
@@ -28,11 +30,11 @@ import java.util.Arrays;
  * @create: 2020-12-02 14:25
  **/
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    private static final String LOGIN_URL = "/login";
+    public static final String LOGIN_URL = "/login";
     /**
-     * 防止并发修改token，使用ThreadLocal
+     * 为每一个用户准备续命token
      */
-    private static ThreadLocal<String> TOKEN = new ThreadLocal<>();
+    public static HashMap<String,String> TOKEN = new HashMap<>();
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -43,20 +45,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-
         String tokenHeader = request.getHeader(TokenEnum.TOKEN_HEADER.getValue());
+
         // 如果请求头中没有Authorization信息或者是登录接口直接放行了
         if (tokenHeader == null || !tokenHeader.startsWith(TokenEnum.TOKEN_PREFIX.getValue()) || request.getRequestURL().toString().contains(LOGIN_URL)) {
-            TOKEN.remove();
             chain.doFilter(request, response);
             return;
         }
-
         // 如果请求头中有token，则进行解析，并且设置认证信息
+        String token = tokenHeader.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
+        String userName = JwtTokenUtils.getUsername(token);
+
         try {
-            if (JWTAuthorizationFilter.TOKEN.get() != null) {
-                refreshToken(TOKEN.get());
-                SecurityContextHolder.getContext().setAuthentication(getAuthentication(TOKEN.get()));
+            if (JWTAuthorizationFilter.TOKEN.get(userName) != null) {
+                refreshToken(TOKEN.get(userName));
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(TOKEN.get(userName)));
             } else {
                 refreshToken(tokenHeader);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
@@ -109,7 +112,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             if (!twoTimesTokenExpiration) {
                 String username = JwtTokenUtils.getUsername(token);
                 String permission = JwtTokenUtils.getUserPermission(token);
-                JWTAuthorizationFilter.TOKEN.set(JwtTokenUtils.createToken(username, permission, false));
+                JWTAuthorizationFilter.TOKEN.put(JwtTokenUtils.getUsername(token),JwtTokenUtils.createToken(username, permission, false));
             } else {
                 throw new RefreshTokenException();
             }

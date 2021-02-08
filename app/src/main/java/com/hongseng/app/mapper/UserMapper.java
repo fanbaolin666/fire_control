@@ -3,9 +3,10 @@ package com.hongseng.app.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import model.SysUser;
+import model.dto.SearchUserDto;
+import model.vo.DetailUserVo;
 import model.vo.SelectUserVo;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,6 +19,8 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<SysUser> {
 
 
-    List<SelectUserVo> listUser(@Param("userId") Integer userId);
+    List<SelectUserVo> listUser(SearchUserDto searchUserDto);
+
+    DetailUserVo selectUserVoById(Integer id);
 
 }

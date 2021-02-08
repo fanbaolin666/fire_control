@@ -60,6 +60,8 @@ spring:
         login-password: guoheng
         allow:
         deny:
+  aop:
+    auto: true
 
 mybatis:
   mapper-locations: classpath*:mapper/*.xml

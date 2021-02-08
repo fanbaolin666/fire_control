@@ -3,6 +3,7 @@ package com.hongseng.app.controller.role;
 import com.hongseng.app.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import model.dto.BatchDeleteRoleDto;
 import model.dto.InsertRoleDto;
 import model.dto.UpdateRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,6 @@ public class RoleController {
         return roleService.roleList(pageSize, pageNum);
     }
 
-
     @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('0118')")
     @ApiOperation(value = "新增角色信息")
@@ -49,7 +49,6 @@ public class RoleController {
         return roleService.updateRole(roleDto);
     }
 
-
     @DeleteMapping("/role/{id}")
     @PreAuthorize("hasAnyAuthority('0138')")
     @ApiOperation(value = "删除角色信息")
@@ -57,6 +56,12 @@ public class RoleController {
         return roleService.deleteRole(id);
     }
 
+    @DeleteMapping("/role")
+    @PreAuthorize("hasAnyAuthority('0138')")
+    @ApiOperation(value = "批量删除角色信息")
+    public Result batchDeleteRole(@RequestBody @Validated BatchDeleteRoleDto batchDeleteRoleDto) {
+        return roleService.batchDeleteRole(batchDeleteRoleDto);
+    }
 
     @GetMapping("/role/{id}")
     @PreAuthorize("hasAnyAuthority('0128')")

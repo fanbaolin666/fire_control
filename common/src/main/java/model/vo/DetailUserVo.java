@@ -1,29 +1,30 @@
-package model.dto;
+package model.vo;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
  * @program: fire_control
  * @description:
  * @author: fbl
- * @create: 2021-02-02 08:38
+ * @create: 2021-02-03 10:36
  **/
 @Data
-public class UpdateUserDto {
-
-    @NotNull
+public class DetailUserVo {
     private Integer id;
-
-    private String password;
 
     private String userName;
 
+    private Boolean available;
+
     private Integer departmentId;
 
-    private Boolean available;
+    private Integer firstDepartmentGradeId;
+
+    private Integer secondDepartmentGradeId;
+
+    private Integer thirdDepartmentGradeId;
 
     private List<Integer> roleId;
 
@@ -34,4 +35,5 @@ public class UpdateUserDto {
     private Long mobile;
 
     private String email;
+
 }

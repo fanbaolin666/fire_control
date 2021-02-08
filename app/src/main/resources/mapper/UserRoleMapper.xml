@@ -9,9 +9,10 @@
             (#{item.userId},#{item.roleId})
          </foreach>
     </insert>
-    <select id="selectRoleName" resultType="java.lang.String">
+
+    <select id="selectRoleName" resultType="model.dto.UpdateRoleDto">
         SELECT
-            role_name
+           role_id id, role_name roleName
         from
             sys_role sr
         LEFT JOIN

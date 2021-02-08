@@ -19,6 +19,8 @@ public class SelectUserVo {
 
     private Boolean available;
 
+    private Integer departmentId;
+
     private String departmentName;
 
     private List<String> roleName;
@@ -27,9 +29,11 @@ public class SelectUserVo {
 
     private String telephone;
 
-    private Integer mobile;
+    private Long mobile;
 
     private String email;
 
     private Timestamp lastLoginTime;
+
+    private Timestamp createTime;
 }

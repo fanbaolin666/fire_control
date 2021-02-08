@@ -28,7 +28,7 @@ public class InsertUserDto {
 
     private String telephone;
 
-    private Integer mobile;
+    private Long mobile;
 
     private String email;
 

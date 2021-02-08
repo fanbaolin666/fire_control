@@ -1,6 +1,7 @@
 package com.hongseng.app.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hongseng.app.config.jwtfilter.JWTAuthorizationFilter;
 import com.hongseng.app.mapper.PermissionMapper;
 import com.hongseng.app.mapper.RolePermissionMapper;
 import com.hongseng.app.mapper.UserMapper;
@@ -19,10 +20,7 @@ import result.Result;
 import utils.JwtTokenUtils;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -61,6 +59,12 @@ public class LoginService {
     public Result login(UserDto user) {
         String userName = user.getUserName();
         String password = user.getPassword();
+
+        // 重新登录清除相关用户token
+        if(Objects.nonNull(JWTAuthorizationFilter.TOKEN.get(userName))){
+            JWTAuthorizationFilter.TOKEN.put(userName,null);
+        }
+
         // 用户名是否存在
         QueryWrapper<SysUser> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("user_name", userName).eq("is_available",true);
@@ -114,7 +118,7 @@ public class LoginService {
         List<RolePermission> rolePermissions = rolePermissionMapper.selectList(rolePermissionQueryWrapper);
 
         QueryWrapper<SysPermission> permissionQueryWrapper = new QueryWrapper<>();
-        permissionQueryWrapper.in("id", rolePermissions.stream().map(RolePermission::getPermissionId).collect(Collectors.toList()));
+        permissionQueryWrapper.in("id", rolePermissions.stream().map(RolePermission::getPermissionId).distinct().collect(Collectors.toList()));
         List<SysPermission> sysPermissions = permissionMapper.selectList(permissionQueryWrapper);
         UserRolePermissionDto userRolePermissionDto = new UserRolePermissionDto();
         BeanUtils.copyProperties(userInfo, userRolePermissionDto);

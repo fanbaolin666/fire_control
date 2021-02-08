@@ -4,14 +4,15 @@ import com.hongseng.app.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.dto.InsertUserDto;
+import model.dto.ResetPasswordDto;
 import model.dto.UpdateUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import result.Result;
+import utils.SearchFilter;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * @program: fire_control
@@ -27,11 +28,11 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/user")
+    @PostMapping("/list-user")
     @PreAuthorize("hasAnyAuthority('0038')")
     @ApiOperation(value = "展示所有用户信息")
-    public Result listUser(@NotNull Integer pageSize, @NotNull Integer pageNum) {
-        return userService.listUser(pageSize, pageNum);
+    public Result listUser(@RequestBody @Validated  SearchFilter searchFilter) {
+        return userService.listUser(searchFilter);
     }
 
     @GetMapping("/user/{id}")

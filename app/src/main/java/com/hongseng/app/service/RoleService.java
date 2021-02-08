@@ -7,11 +7,13 @@ import com.github.pagehelper.PageInfo;
 import com.hongseng.app.mapper.RoleMapper;
 import enums.ErrorCodeEnum;
 import model.SysRole;
+import model.dto.BatchDeleteRoleDto;
 import model.dto.InsertRoleDto;
 import model.dto.UpdateRoleDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import result.CommonConstants;
 import result.Result;
 
 import java.util.List;
@@ -57,6 +59,14 @@ public class RoleService {
 
     public Result deleteRole(Integer id) {
         roleMapper.deleteById(id);
+        return Result.success();
+    }
+
+    public Result batchDeleteRole(BatchDeleteRoleDto batchDeleteRoleDto){
+        int res = roleMapper.deleteBatchIds(batchDeleteRoleDto.getIds());
+        if (res == CommonConstants.DeleteCodeStatus.IS_NOT_DELETE) {
+            return Result.failure(ErrorCodeEnum.SYS_ERR_DELETE_FAILED);
+        }
         return Result.success();
     }
 
