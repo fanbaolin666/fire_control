@@ -43,28 +43,28 @@ public class RoleController {
     }
 
     @PutMapping("/role")
-    @PreAuthorize("hasAnyAuthority('0128')")
+    @PreAuthorize("hasAnyAuthority('0218')")
     @ApiOperation(value = "修改角色信息")
     public Result updateRole(@RequestBody UpdateRoleDto roleDto) {
         return roleService.updateRole(roleDto);
     }
 
     @DeleteMapping("/role/{id}")
-    @PreAuthorize("hasAnyAuthority('0138')")
+    @PreAuthorize("hasAnyAuthority('0318')")
     @ApiOperation(value = "删除角色信息")
     public Result deleteRole(@PathVariable Integer id) {
         return roleService.deleteRole(id);
     }
 
     @DeleteMapping("/role")
-    @PreAuthorize("hasAnyAuthority('0138')")
+    @PreAuthorize("hasAnyAuthority('0518')")
     @ApiOperation(value = "批量删除角色信息")
     public Result batchDeleteRole(@RequestBody @Validated BatchDeleteRoleDto batchDeleteRoleDto) {
         return roleService.batchDeleteRole(batchDeleteRoleDto);
     }
 
     @GetMapping("/role/{id}")
-    @PreAuthorize("hasAnyAuthority('0128')")
+    @PreAuthorize("hasAnyAuthority('0018')")
     @ApiOperation(value = "查询角色详情")
     public Result getRole(@PathVariable Integer id) {
         return roleService.getRole(id);

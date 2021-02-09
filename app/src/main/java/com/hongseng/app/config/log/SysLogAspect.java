@@ -14,6 +14,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -45,6 +46,9 @@ public class SysLogAspect {
 
     @Autowired
     LogMapper logMapper;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /**
      * @Author fbl
@@ -87,7 +91,6 @@ public class SysLogAspect {
         //将参数所在的数组转换成json
         String params = JSON.toJSONString(args);
         sysLog.setParams(params);
-
         if (request.getRequestURL().toString().contains(LOGIN_URL)) {
             Object[] loginPar = joinPoint.getArgs();
             //将参数所在的数组转换成json

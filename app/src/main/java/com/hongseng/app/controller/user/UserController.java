@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyAuthority('0038')")
+    @PreAuthorize("hasAnyAuthority('0138')")
     @ApiOperation(value = "展示用户详情")
     public Result userDetail(@PathVariable Integer id) {
         return userService.userDetail(id);

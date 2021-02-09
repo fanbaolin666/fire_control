@@ -40,7 +40,7 @@ public class RolePermissionController {
     }
 
     @PutMapping("/permission")
-    @PreAuthorize("hasAnyAuthority('0148')")
+    @PreAuthorize("hasAnyAuthority('0418')")
     @ApiOperation(value = "设置角色权限信息")
     public Result updatePermission(@RequestBody @Validated UpdatePermissionDto updatePermissionDto) {
         return rolePermissionService.updatePermission(updatePermissionDto);

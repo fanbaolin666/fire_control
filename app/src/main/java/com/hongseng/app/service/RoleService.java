@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hongseng.app.mapper.RoleMapper;
+import com.hongseng.app.mapper.UserRoleMapper;
 import enums.ErrorCodeEnum;
 import model.SysRole;
+import model.UserRole;
 import model.dto.BatchDeleteRoleDto;
 import model.dto.InsertRoleDto;
 import model.dto.UpdateRoleDto;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import result.CommonConstants;
 import result.Result;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -29,6 +32,9 @@ public class RoleService {
 
     @Autowired
     RoleMapper roleMapper;
+
+    @Autowired
+    UserRoleMapper userRoleMapper;
 
     public Result roleList(Integer pageSize, Integer pageNum) {
         PageHelper.startPage(pageNum, pageSize);
@@ -58,16 +64,33 @@ public class RoleService {
     }
 
     public Result deleteRole(Integer id) {
-        roleMapper.deleteById(id);
-        return Result.success();
-    }
-
-    public Result batchDeleteRole(BatchDeleteRoleDto batchDeleteRoleDto){
-        int res = roleMapper.deleteBatchIds(batchDeleteRoleDto.getIds());
+        int res = roleMapper.deleteById(id);
+        deleteUserRole(id);
         if (res == CommonConstants.DeleteCodeStatus.IS_NOT_DELETE) {
             return Result.failure(ErrorCodeEnum.SYS_ERR_DELETE_FAILED);
         }
         return Result.success();
+    }
+
+    public Result batchDeleteRole(BatchDeleteRoleDto batchDeleteRoleDto){
+        @NotNull List<Integer> ids = batchDeleteRoleDto.getIds();
+        int res = roleMapper.deleteBatchIds(ids);
+        ids.forEach(this::deleteUserRole);
+        if (res == CommonConstants.DeleteCodeStatus.IS_NOT_DELETE) {
+            return Result.failure(ErrorCodeEnum.SYS_ERR_DELETE_FAILED);
+        }
+        return Result.success();
+    }
+
+    /**
+     * @Author fbl
+     * @Description 删除用户的角色信息
+     * @Date 14:28 2021/2/8
+     * @Param id
+    */
+    private void deleteUserRole(Integer id){
+        QueryWrapper<UserRole> roleId = new QueryWrapper<UserRole>().eq("role_id", id);
+        userRoleMapper.delete(roleId);
     }
 
     public Result getRole(Integer id) {
