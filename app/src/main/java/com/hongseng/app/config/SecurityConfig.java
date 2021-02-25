@@ -73,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 阿里巴巴 druid
                 .antMatchers("/druid/**").permitAll()
                 .antMatchers("/default/**").permitAll()
+                .antMatchers("/").permitAll()
                 // swagger 文档
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
