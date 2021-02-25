@@ -33,5 +33,4 @@ public class LogController {
         return logService.logList(searchFilter);
     }
 
-
 }

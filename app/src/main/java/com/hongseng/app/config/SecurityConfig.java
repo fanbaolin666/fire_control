@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     SecurityConfig(ApplicationContext applicationContext){
         this.applicationContext = applicationContext;
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -70,6 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(anonymousUrls.toArray(new String[0])).permitAll()
                 // 阿里巴巴 druid
                 .antMatchers("/druid/**").permitAll()
+                .antMatchers("/default/**").permitAll()
                 // swagger 文档
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
@@ -86,6 +89,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
+                        "/**/*.svg",
+                        "/**/*.ico",
+                        "/**/*.png",
                         "/webSocket/**"
                 ).permitAll()
                 // anyRequest 只能配置一个，多个会报错
@@ -105,5 +111,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 }

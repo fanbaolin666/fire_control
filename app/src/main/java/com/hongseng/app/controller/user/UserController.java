@@ -4,7 +4,6 @@ import com.hongseng.app.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import model.dto.InsertUserDto;
-import model.dto.ResetPasswordDto;
 import model.dto.UpdateUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +30,7 @@ public class UserController {
     @PostMapping("/list-user")
     @PreAuthorize("hasAnyAuthority('0038')")
     @ApiOperation(value = "展示所有用户信息")
-    public Result listUser(@RequestBody @Validated  SearchFilter searchFilter) {
+    public Result listUser(@RequestBody @Validated SearchFilter searchFilter) {
         return userService.listUser(searchFilter);
     }
 
