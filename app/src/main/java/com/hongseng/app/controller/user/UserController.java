@@ -1,5 +1,6 @@
 package com.hongseng.app.controller.user;
 
+import annotation.AnonymousAccess;
 import com.hongseng.app.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

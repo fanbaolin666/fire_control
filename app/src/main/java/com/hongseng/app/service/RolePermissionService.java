@@ -1,6 +1,5 @@
 package com.hongseng.app.service;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hongseng.app.mapper.PermissionMapper;

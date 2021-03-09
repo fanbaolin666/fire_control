@@ -27,7 +27,7 @@ public class LogController {
     LogService logService;
 
     @PostMapping("/log")
-    @PreAuthorize("hasAnyAuthority('0018')")
+    @PreAuthorize("hasAnyAuthority('0048')")
     @ApiOperation(value = "展示日志记录")
     public Result logList(@RequestBody @Validated SearchFilter searchFilter) {
         return logService.logList(searchFilter);

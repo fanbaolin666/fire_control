@@ -88,21 +88,21 @@ public class SysLogAspect {
 
         //请求的参数
         Object[] args = joinPoint.getArgs();
-        //将参数所在的数组转换成json
-        String params = JSON.toJSONString(args);
-        sysLog.setParams(params);
         if (request.getRequestURL().toString().contains(LOGIN_URL)) {
-            Object[] loginPar = joinPoint.getArgs();
             //将参数所在的数组转换成json
-            String loginParStr = JSON.toJSONString(loginPar[0]);
+            String loginParStr = JSON.toJSONString(args[0]);
             UserDto userDto = JSON.parseObject(loginParStr, UserDto.class);
+            userDto.setPassword("***");
+            sysLog.setParams(JSON.toJSONString(userDto));
             sysLog.setUserName(userDto.getUserName());
             logMapper.insert(sysLog);
         } else {
             String header = request.getHeader(TokenEnum.TOKEN_HEADER.getValue());
             String token = header.replace(TokenEnum.TOKEN_PREFIX.getValue(), "");
             String userName = JwtTokenUtils.getUsername(token);
+            String param = JSON.toJSONString(args);
             sysLog.setUserName(userName);
+            sysLog.setParams(param);
             logMapper.insert(sysLog);
         }
     }
