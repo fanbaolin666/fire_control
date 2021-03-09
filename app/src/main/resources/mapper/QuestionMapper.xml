@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongseng.app.mapper.QuestionMapper">
+
+    <select id="selectQuestionList" resultType="model.dto.SelectQuestionDto">
+       	SELECT
+	        id,content,type,answer,difficulty_grade difficultyGrade,analysis,picture_url pictureUrl,
+            create_time createTime,update_time updateTime,
+	    from
+	        sys_question q
+	    <if test="type != null">
+            q.type = #{type}
+        </if>
+        <if test="subjectId != null">
+            q.subject_id = #{subjectId}
+        </if>
+        <if test="difficultyGrade != null">
+            q.difficulty_grade = #{difficultyGrade}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hongseng.app.mapper.QuestionBankMapper">
+
+    <select id="selectQuestionBank" resultType="model.dto.SelectQuestionBankDto">
+        select
+            name,remark,id,create_time createTime
+        from
+            sys_question_bank
+        where
+            1 = 1
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+    </select>
+    <select id="getCountTypeNum" resultType="model.dto.CountTypeNumDto">
+        SELECT
+            type,count(*) count
+        from
+            sys_question
+        where
+            id
+        in
+            <foreach collection="id" separator="," item="id" open="(" close=")">
+                #{id}
+            </foreach>
+        GROUP BY type
+    </select>
+</mapper>
